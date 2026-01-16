@@ -20,14 +20,23 @@ The binary needs to export a function named `p` (for "process"), which returns a
 If you already have a suitable `.wasm` file lying around, you can simply drag it into the ScoreCard web app to load it and get the corresponding QR code.
 
 ### How can I make one?
-Score cards can be created in the web app directly in the "Create" tab.
-At the moment, this allows you to write WebAssembly directly (in the [WebAssembly text format](https://developer.mozilla.org/en-US/docs/WebAssembly/Understanding_the_text_format)), and it shows you the disassembly of any program that's currently loaded - allowing you to tweak it by hacking the assembly.
-In the future, we may include some higher-level ways of creating ScoreCards inside the app.
+**Try following the along with the [workshop tutorial](https://ijc8.me/nime2024/)**, which includes a series of increasingly-complex examples with explanations.
 
-Most of the examples in this repository are written in C.
-Writing ScoreCards in C requires a compiler toolchain that can target WebAssembly such as [emscripten](https://emscripten.org/). Some scripts are included in `examples/` for building and debugging C examples; see `build.sh` and `debug.sh`.
-A modest library for writing scorecards in C is provided in the form of `deck.h`.
-Other languages you might be interested in exploring for use with ScoreCard include Zig, Rust, Go, and Faust. `strip.sh` may also be helpful in these cases for removing or renaming exports.
+Score cards can be created in the web app directly in the "Create" tab, which allows you to write WebAssembly directly (in the [WebAssembly text format](https://developer.mozilla.org/en-US/docs/WebAssembly/Understanding_the_text_format)).
+It also shows you the disassembly of any program that's currently loaded, allowing you to tweak it by hacking the assembly.
+(In the future, we may include some higher-level ways of creating ScoreCards inside the app.)
+
+Score cards can also be written in C, as are most of the examples in this repository.
+Writing score cards in C requires a compiler toolchain that can target WebAssembly such as [emscripten](https://emscripten.org/).
+Fortunately, **the [ScoreCard Creator](https://ijc8.me/scorecard-creator/) allows you to write score cards in C directly in your browser**, without installing anything, thanks to [emception](https://github.com/jprendes/emception)!
+
+If you'd rather use a local toolchain, some scripts are included in `examples/` for building and debugging C examples; see [`build.sh`](examples/build.sh) and [`debug.sh`](examples/debug.sh).
+A modest library for writing scorecards in C is provided in the form of [`deck.h`](examples/deck.h).
+Other languages you might be interested in exploring for use with ScoreCard include Zig, Rust, Go, and Faust. [`strip.sh`](examples/strip.sh) may also be helpful in these cases for removing or renaming exports.
+
+## Links
+- [WAC paper](https://ijc8.me/static/scorecard.pdf)
+- [NIME workshop materials](https://ijc8.me/nime2024)
 
 ## Credits
 Designed and implemented by [Ian Clester](https://ijc8.me).
@@ -40,3 +49,5 @@ Assets:
 - [Sysfont](https://sysfont.com/) by [Arne Sava](https://arnesava.com/)
 - [Pixel Art Icons](https://pixelarticons.com/) by [Gerrit Halfmann](https://twitter.com/halfmage)
 - Tabs from [Mac OS 9: UI Kit](https://www.figma.com/community/file/966779730364082883) by [Michael Feeney](https://swallowmygraphicdesign.com/)
+
+[ScoreCard Creator](https://github.com/ijc8/scorecard-creator) is built on [emception](https://github.com/jprendes/emception) by [jprendes](https://github.com/jprendes)
