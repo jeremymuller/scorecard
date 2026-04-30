@@ -46,13 +46,10 @@ function formatTime(seconds: number) {
 }
 
 const context = new AudioContext({ sampleRate: 44100 })
-console.log(context.sampleRate)
 
 const nodePromise = context.audioWorklet.addModule("worklet.js").then(() => {
-    console.log("added module")
     const node = new AudioWorkletNode(context, "custom-processor")
     node.connect(context.destination)
-    console.log("created and connected node")
     return node
 })
 
@@ -61,7 +58,17 @@ async function sendToWorklet(message: any) {
     node.port.postMessage(message)
 }
 
-// For iOS screen-lock:
+// Workaround for iOS issue where context state is "running", but the context isn't actually running. 🙄
+// See https://bugs.webkit.org/show_bug.cgi?id=263627
+async function maybeRestartContext() {
+    const t0 = context.currentTime
+    await new Promise(r => setTimeout(r, 50))
+    if (context.currentTime === t0) {
+        await context.suspend()
+        await context.resume()
+    }
+}
+
 context.onstatechange = () => {
     if (context.state === "suspended" || context.state === "interrupted") {
         context.resume()
@@ -520,6 +527,8 @@ function App() {
             if (context.state === "suspended" || context.state === "interrupted") {
                 unmute() // for iOS
                 context.resume()
+            } else if (context.state === "running") {
+                maybeRestartContext() // for iOS
             }
             let _seed = seed
             if (state === "stopped" && !seedLock) {
