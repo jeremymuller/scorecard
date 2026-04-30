@@ -63,7 +63,7 @@ async function sendToWorklet(message: any) {
 
 // For iOS screen-lock:
 context.onstatechange = () => {
-    if (context.state === "suspended") {
+    if (context.state === "suspended" || context.state === "interrupted") {
         context.resume()
     }
 }
@@ -84,15 +84,17 @@ function iOS() {
 
 // For iOS quirk in which Web Audio is treated like a ringer while audio tags are treated like media:
 // (See https://stackoverflow.com/questions/21122418/ios-webaudio-only-works-on-headphones/46839941#46839941)
+let unmuteTag: HTMLAudioElement | null = null
 function unmute() {
     if (!iOS()) return
-    const silenceDataURL = "data:audio/mp3;base64,//MkxAAHiAICWABElBeKPL/RANb2w+yiT1g/gTok//lP/W/l3h8QO/OCdCqCW2Cw//MkxAQHkAIWUAhEmAQXWUOFW2dxPu//9mr60ElY5sseQ+xxesmHKtZr7bsqqX2L//MkxAgFwAYiQAhEAC2hq22d3///9FTV6tA36JdgBJoOGgc+7qvqej5Zu7/7uI9l//MkxBQHAAYi8AhEAO193vt9KGOq+6qcT7hhfN5FTInmwk8RkqKImTM55pRQHQSq//MkxBsGkgoIAABHhTACIJLf99nVI///yuW1uBqWfEu7CgNPWGpUadBmZ////4sL//MkxCMHMAH9iABEmAsKioqKigsLCwtVTEFNRTMuOTkuNVVVVVVVVVVVVVVVVVVV//MkxCkECAUYCAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV"
-    const tag = document.createElement("audio")
-    tag.controls = false
-    tag.preload = "auto"
-    tag.loop = true
-    tag.src = silenceDataURL
-    tag.play()
+    if (!unmuteTag) {
+        unmuteTag = document.createElement("audio")
+        unmuteTag.controls = false
+        unmuteTag.preload = "auto"
+        unmuteTag.loop = true
+        unmuteTag.src = "data:audio/mp3;base64,//MkxAAHiAICWABElBeKPL/RANb2w+yiT1g/gTok//lP/W/l3h8QO/OCdCqCW2Cw//MkxAQHkAIWUAhEmAQXWUOFW2dxPu//9mr60ElY5sseQ+xxesmHKtZr7bsqqX2L//MkxAgFwAYiQAhEAC2hq22d3///9FTV6tA36JdgBJoOGgc+7qvqej5Zu7/7uI9l//MkxBQHAAYi8AhEAO193vt9KGOq+6qcT7hhfN5FTInmwk8RkqKImTM55pRQHQSq//MkxBsGkgoIAABHhTACIJLf99nVI///yuW1uBqWfEu7CgNPWGpUadBmZ////4sL//MkxCMHMAH9iABEmAsKioqKigsLCwtVTEFNRTMuOTkuNVVVVVVVVVVVVVVVVVVV//MkxCkECAUYCAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV"
+    }
+    unmuteTag.play()
 }
 
 // function profile(instance: WebAssembly.Instance) {
@@ -515,7 +517,7 @@ function App() {
 
     const setState = (_state: "playing" | "paused") => {
         if (_state === "playing") {
-            if (context.state === "suspended") {
+            if (context.state === "suspended" || context.state === "interrupted") {
                 unmute() // for iOS
                 context.resume()
             }
