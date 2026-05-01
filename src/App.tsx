@@ -459,7 +459,7 @@ function App() {
     }
 
     const loadBinary = async (binary: Uint8Array) => {
-        const module = new WebAssembly.Module(binary)
+        const module = new WebAssembly.Module(binary as BufferSource)
         setSize(binary.length)
         console.log("loaded wasm", module)
         setTitle(extractTitle(module) ?? NO_TITLE)

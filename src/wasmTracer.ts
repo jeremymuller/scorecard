@@ -11,7 +11,7 @@ export type TraceMap = {
 
 function disassembleWasm(binary: Uint8Array) {
     const reader = new wasmparser.BinaryReader()
-    reader.setData(binary, 0, binary.byteLength)
+    reader.setData(binary.buffer as ArrayBuffer, binary.byteOffset, binary.byteLength)
     const dis = new wasmdis.WasmDisassembler()
     dis.addOffsets = true
     dis.skipTypes = true
