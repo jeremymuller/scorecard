@@ -61,7 +61,7 @@ float noise() {
 typedef float (*osc_func)(float *state, float freq);
 
 #define define_osc(name, expression) \
-    float name(float *pphase, float freq) { \
+    float name(float *pphase, float freq, float duty) { \
         const float phase = *pphase; \
         float x = expression; \
         *pphase += freq * dt; \
@@ -72,6 +72,7 @@ typedef float (*osc_func)(float *state, float freq);
 define_osc(sqr, phase < 0.5 ? -1 : 1)
 define_osc(saw, phase * 2 - 1)
 define_osc(tri, (phase < 0.5 ? phase : 1 - phase) * 4 - 1)
+define_osc(pul, phase < duty ? -1 : 1)
 
 // Envelopes
 float env(float t, float dur) {
@@ -91,6 +92,11 @@ float ad(float t, float attack, float decay) {
 
 float ramp(float t, float dur, float start, float end) {
     return t / dur * (end - start) + start;
+}
+
+// gate
+float g(float t, float gate_dur) {
+    return t <= gate_dur ? 1.0 : 0.0;
 }
 
 // Misc

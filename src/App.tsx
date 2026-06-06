@@ -337,9 +337,9 @@ function Scan({ onScan, tab }: any) {
     </>
 }
 
-const About = memo(function About({ setTab }: any) {
+const Credit = memo(function Credit({ setTab }: any) {
     // TODO: Make this text fill the card on both desktop and mobile...
-    return <div id="about" style={{ textAlign: "left", padding: "0 12px", containerType: "size", height: "100%" }}>
+    return <div id="credit" style={{ textAlign: "left", padding: "0 12px", containerType: "size", height: "100%" }}>
         <div style={{ fontSize: "4cqw" }}>
             <span style={{ fontSize: "1.1em" }}>ScoreCard is a player for "score cards": QR codes containing tiny generative music programs.</span> A score card looks like this:
             <img src={exampleCardUrl} style={{ display: "block", margin: "auto", padding: "12px" }} />
@@ -446,7 +446,7 @@ function App() {
     const [time, setTime] = useState(0)
     const [error, setError] = useState(false)
     const encoded = new URLSearchParams(window.location.search).get("c")
-    const [tab, setTab] = useState(encoded ? 0 : 3) // TODO: use an enum
+    const [tab, setTab] = useState(0) // old: encoded ? 0 : 3
     const [dragging, setDragging] = useState(false)
     const qrCanvas = useRef<HTMLCanvasElement>(null)
     const [tracing, _setTracing] = useState(false)
@@ -494,12 +494,13 @@ function App() {
         const url = `${prefix}?${seedParam}c=${encodeBlob(binary)}`
         console.log(url)
         console.log("URL length:", url.length)
+        console.log("blob: " + encodeBlob(binary))
         const canvas = qrCanvas.current!
         // Workaround: don't let `QRCode.toCanvas` mangle our styles.
         const style = canvas.style.cssText
         try {
             console.log("QR version:", QRCode.create(url, { errorCorrectionLevel: "L" }).version)
-            QRCode.toCanvas(canvas, url, { errorCorrectionLevel: "L", scale: 1, margin: 0 })
+            QRCode.toCanvas(canvas, url, { errorCorrectionLevel: "L", scale: 1, margin: 0, })
             setError(false)
         } catch {
             setError(true)
@@ -649,9 +650,9 @@ function App() {
 
     const tabs = [
         { name: "Listen", component: <Listen {...{ qrCanvas, title, size, seed, setSeed, seedLock, setSeedLock, state, setState, time, reset, error, buffer: binary, tracing, setTracing }} /> },
-        { name: "Scan", component: <Scan {...{ onScan, tab }} /> },
-        { name: "Create", component: <Create {...{ binary, loadBinary, wat, setWAT, tab }} /> },
-        { name: "About", component: <About {...{ setTab }} /> },
+        // { name: "Scan", component: <Scan {...{ onScan, tab }} /> },
+        // { name: "Create", component: <Create {...{ binary, loadBinary, wat, setWAT, tab }} /> },
+        { name: "Credit", component: <Credit {...{ setTab }} /> },
     ]
 
     const border = `1px ${dragging ? "dashed" : "solid"} black`
