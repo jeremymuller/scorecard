@@ -11,11 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
-arpanet.c
-arpanet_url.txt
+examples/arpanet.c
+examples/arpanet_url.txt
 arpanet_url.odt
-ninefold.c
-scales.c
+examples/ninefold.c
+examples/scales.c
 
 # Editor directories and files
 .vscode/*
